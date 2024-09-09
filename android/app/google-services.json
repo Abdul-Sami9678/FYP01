@@ -1,0 +1,54 @@
+{
+  "project_info": {
+    "project_number": "614910018724",
+    "project_id": "riceapp01",
+    "storage_bucket": "riceapp01.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:614910018724:android:5fecddbe87bd8549ab9231",
+        "android_client_info": {
+          "package_name": "com.example.rice_application"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "614910018724-8sup08fuapogrnd12uheou4mh9qcemf0.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.example.rice_application",
+            "certificate_hash": "0a8a3addffbe1f17a54fa30da958947c6a93fd26"
+          }
+        },
+        {
+          "client_id": "614910018724-s2d3qrntfdj05oko3g3pespjk4ejbngf.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyCLryrGOOBIn9m8rGKSY5eRDmNastQV0W8"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "614910018724-s2d3qrntfdj05oko3g3pespjk4ejbngf.apps.googleusercontent.com",
+              "client_type": 3
+            },
+            {
+              "client_id": "614910018724-8l34qooamnrhpgmgk156pj7tkos5ehad.apps.googleusercontent.com",
+              "client_type": 2,
+              "ios_info": {
+                "bundle_id": "com.example.riceApplication"
+              }
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
