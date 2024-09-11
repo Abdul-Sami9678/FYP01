@@ -258,11 +258,11 @@ class _BuyerHomenavbarState extends State<BuyerHomenavbar> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: const Color(0XFFFFFFFF),
+      backgroundColor: const Color.fromARGB(255, 222, 44, 44),
       body: RefreshIndicator(
         onRefresh: _refresh,
         color: Colors.black,
-        backgroundColor: Colors.white,
+        backgroundColor: const Color.fromARGB(255, 161, 11, 11),
         child: ListView(
           children: [
             Padding(
@@ -299,15 +299,17 @@ class _BuyerHomenavbarState extends State<BuyerHomenavbar> {
                           padding: const EdgeInsets.only(right: 10),
                           child: TextButton(
                             onPressed: () {
-                              _showBottomSheet(
-                                names[index],
-                                descriptions[index],
-                                nutrients[index],
-                                vitamins[index],
-                                dishes[index],
-                                locations[index],
-                                imagePaths[index],
-                              );
+                              WidgetsBinding.instance.addPostFrameCallback((_) {
+                                _showBottomSheet(
+                                  names[index],
+                                  descriptions[index],
+                                  nutrients[index],
+                                  vitamins[index],
+                                  dishes[index],
+                                  locations[index],
+                                  imagePaths[index],
+                                );
+                              });
                             },
                             style: TextButton.styleFrom(
                               padding: EdgeInsets.zero,
@@ -366,7 +368,8 @@ class _BuyerHomenavbarState extends State<BuyerHomenavbar> {
                   SizedBox(
                     height: 350,
                     child: FirebaseAnimatedList(
-                      query: dbRef.child('Post List'),
+                      query: dbRef
+                          .child('Post List'), // Database refernce...........
                       itemBuilder: (BuildContext context, DataSnapshot snapshot,
                           Animation<double> animation, int index) {
                         if (snapshot.value is Map) {
@@ -377,15 +380,19 @@ class _BuyerHomenavbarState extends State<BuyerHomenavbar> {
                                     24.0), // Increased padding for more space between posts
                             child: GestureDetector(
                               onTap: () {
-                                _navigateToDetailsScreen(
-                                  post['pTitle'] ?? 'No Title',
-                                  post['pDescription'] ?? 'No Description',
-                                  post['pNutrients'] as String?,
-                                  post['pVitamins'] as String?,
-                                  post['pDishes'] as String?,
-                                  post['pLocation'] ?? 'No Location',
-                                  post['pImage'] ?? '',
-                                );
+                                WidgetsBinding.instance
+                                    .addPostFrameCallback((_) {
+                                  _navigateToDetailsScreen(
+                                    post['pTitle'] ?? 'No Title',
+                                    post['pDescription'] ?? 'No Description',
+                                    post['pNutrients'] ?? 'No Nutrients',
+                                    post['pVitamins'] ?? 'No Vitamins',
+                                    post['pDishes'] ?? 'No Dishes',
+                                    post['pLocation'] ?? 'No Location',
+                                    post['pImage'] ??
+                                        'assets/images/default.jpg',
+                                  );
+                                });
                               },
                               child: ClipRRect(
                                 borderRadius: BorderRadius.circular(12),
