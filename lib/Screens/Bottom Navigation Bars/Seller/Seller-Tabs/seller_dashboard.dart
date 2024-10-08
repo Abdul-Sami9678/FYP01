@@ -84,42 +84,22 @@ class _SellerDashboardHomeState extends State<SellerDashboardHome> {
     return Scaffold(
       backgroundColor: const Color(0XFFFFFFFF),
       body: SafeArea(
-        child: Stack(
-          children: [
-            // Background Image for the weather
-            _buildBackgroundImage(),
-            // Content of the weather card with padding
-            Padding(
-              padding: const EdgeInsets.symmetric(horizontal: 22, vertical: 20),
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  // Weather Card positioned at the top
-                  _buildWeatherCard(),
-                  const SizedBox(height: 20),
-                  // Add additional items below here in the future
-                  Text(
-                    "Additional items can be placed here...",
-                    style: TextStyle(color: Colors.grey[700], fontSize: 16),
-                  ),
-                ],
+        child: Padding(
+          padding: const EdgeInsets.symmetric(horizontal: 22, vertical: 20),
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              // Weather Card positioned at the top
+              _buildWeatherCard(),
+              const SizedBox(height: 20),
+              // Add additional items below here in the future
+              Text(
+                "Additional items can be placed here...",
+                style: TextStyle(color: Colors.grey[700], fontSize: 16),
               ),
-            ),
-          ],
+            ],
+          ),
         ),
-      ),
-    );
-  }
-
-  // Background Image Widget
-  Widget _buildBackgroundImage() {
-    return Positioned.fill(
-      child: Image.network(
-        "https://plus.unsplash.com/premium_photo-1669809948017-518b5d800d73?q=80&w=1887&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D", // Random weather image URL
-        fit: BoxFit.cover,
-        color: Colors.black.withOpacity(0.3), // Dim the background
-        colorBlendMode:
-            BlendMode.darken, // Darken the image for better contrast
       ),
     );
   }
@@ -129,7 +109,13 @@ class _SellerDashboardHomeState extends State<SellerDashboardHome> {
       padding: const EdgeInsets.all(20),
       decoration: BoxDecoration(
         borderRadius: BorderRadius.circular(20),
-        color: const Color.fromARGB(255, 154, 195, 212).withOpacity(0.8),
+        // Set the background image inside the card
+        image: const DecorationImage(
+          image: NetworkImage(
+              'https://plus.unsplash.com/premium_photo-1669809948017-518b5d800d73?q=80&w=1887&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D'),
+          fit: BoxFit.cover,
+          colorFilter: ColorFilter.mode(Colors.black45, BlendMode.darken),
+        ),
         boxShadow: [
           BoxShadow(
             color: const Color.fromARGB(255, 136, 128, 128).withOpacity(0.1),
@@ -144,7 +130,7 @@ class _SellerDashboardHomeState extends State<SellerDashboardHome> {
               mainAxisSize: MainAxisSize.min,
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                // Temperature and Wind Speed Row
+                // Temperature, Wind Speed, and Weather Icon Row
                 Row(
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [
@@ -155,10 +141,10 @@ class _SellerDashboardHomeState extends State<SellerDashboardHome> {
                         Text(
                           "${_weather?.temperature?.celsius?.toStringAsFixed(0)}°C",
                           style: const TextStyle(
-                            fontSize:
-                                40, // Reduced font size to fit more content
+                            fontSize: 40,
                             fontWeight: FontWeight.bold,
-                            color: Colors.black87,
+                            color: Colors
+                                .white, // White text to contrast with the background
                           ),
                         ),
                         const SizedBox(width: 12),
@@ -167,7 +153,7 @@ class _SellerDashboardHomeState extends State<SellerDashboardHome> {
                           children: [
                             const Icon(
                               Icons.wind_power, // Wind icon
-                              color: Colors.black54,
+                              color: Colors.white,
                               size: 24,
                             ),
                             const SizedBox(width: 5),
@@ -175,7 +161,8 @@ class _SellerDashboardHomeState extends State<SellerDashboardHome> {
                               "${_weather?.windSpeed?.toStringAsFixed(0)} m/s",
                               style: const TextStyle(
                                 fontSize: 16,
-                                color: Colors.black87,
+                                color: Colors
+                                    .white, // White text to contrast with the background
                               ),
                             ),
                           ],
@@ -200,11 +187,12 @@ class _SellerDashboardHomeState extends State<SellerDashboardHome> {
                 const SizedBox(height: 2),
                 // City and Country name
                 Text(
-                  '$cityName $countryName',
+                  '$cityName, $countryName',
                   style: const TextStyle(
                     fontSize: 16,
                     fontWeight: FontWeight.w400,
-                    color: Colors.black54,
+                    color: Colors
+                        .white, // White text to contrast with the background
                   ),
                 ),
               ],
