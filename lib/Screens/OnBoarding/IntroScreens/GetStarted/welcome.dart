@@ -152,7 +152,7 @@ class _Welcome_ScreenState extends State<Welcome_Screen> {
                                     context); // Dismiss the alert dialog
                                 Navigator.pushNamed(
                                     context,
-                                    Home_Screen
+                                    HomeScreen
                                         .id); // Navigate to the next screen
                               },
                               child: const Text(

@@ -5,23 +5,41 @@ import 'package:rice_application/Screens/Bottom%20Navigation%20Bars/Buyer/Buyer_
 import 'package:rice_application/Screens/Bottom%20Navigation%20Bars/Buyer/Buyer_Tabs/Buyer_profilenavbar.dart';
 import 'package:rice_application/Screens/Bottom%20Navigation%20Bars/Buyer/Buyer_Tabs/Buyer_vieworders.dart';
 
-class Home_Screen extends StatefulWidget {
-  const Home_Screen({super.key});
+class HomeScreen extends StatefulWidget {
+  const HomeScreen({super.key});
 
   // Static-ID of Home Screen
   static const String id = 'Home-screen';
 
   @override
-  State<Home_Screen> createState() => _Home_ScreenState();
+  State<HomeScreen> createState() => _HomeScreenState();
 }
 
-class _Home_ScreenState extends State<Home_Screen> {
+class _HomeScreenState extends State<HomeScreen> {
   int myIndex = 0;
+  late PageController _pageController;
+
+  @override
+  void initState() {
+    super.initState();
+    _pageController = PageController(initialPage: myIndex);
+  }
 
   void _navigateBottomNavBar(int index) {
     setState(() {
       myIndex = index;
     });
+    _pageController.animateToPage(
+      index,
+      duration: const Duration(milliseconds: 300),
+      curve: Curves.easeInOut,
+    );
+  }
+
+  @override
+  void dispose() {
+    _pageController.dispose();
+    super.dispose();
   }
 
   @override
@@ -29,24 +47,26 @@ class _Home_ScreenState extends State<Home_Screen> {
     final List<Widget> pageList = <Widget>[
       const BuyerHomenavbar(),
       const BuyerChatnavbar(),
-      BuyerCameranavbar(
-        onBottomSheetClosed: () {
-          _navigateBottomNavBar(0); // Navigate to index 0 (home tab)
-        },
-      ),
+      const BuyerCameranavbar(),
       const BuyerCartNavbar(),
-      BuyerProfilenavbar(
-        onBackButtonPressed: () {
-          _navigateBottomNavBar(0); // Navigate to index 0 (home tab)
-        },
-      ),
+      const BuyerProfilenavbar(),
     ];
 
     return Scaffold(
       resizeToAvoidBottomInset: false,
       body: Stack(
         children: [
-          pageList[myIndex],
+          // PageView for swipeable screen navigation
+          PageView(
+            controller: _pageController,
+            onPageChanged: (index) {
+              setState(() {
+                myIndex = index;
+              });
+            },
+            children: pageList,
+          ),
+          // Bottom Navigation Bar
           Positioned(
             left: 16,
             right: 16,

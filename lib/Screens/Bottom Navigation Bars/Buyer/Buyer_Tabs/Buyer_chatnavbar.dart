@@ -4,6 +4,9 @@ import 'package:lottie/lottie.dart';
 class BuyerChatnavbar extends StatefulWidget {
   const BuyerChatnavbar({super.key});
 
+  // Static-ID of Chat Screen
+  static const String id = 'Chat-screen';
+
   @override
   State<BuyerChatnavbar> createState() => _BuyerChatnavbarState();
 }

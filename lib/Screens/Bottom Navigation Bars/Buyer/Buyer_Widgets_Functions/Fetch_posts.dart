@@ -1,16 +1,22 @@
 import 'package:flutter/material.dart';
+import 'package:get/get_core/src/get_main.dart';
+import 'package:get/get_navigation/get_navigation.dart';
+import 'package:provider/provider.dart'; // Import provider package
+import 'package:rice_application/Screens/Bottom%20Navigation%20Bars/Buyer/Buyer_Provider/cart_provider.dart';
+import 'package:rice_application/Screens/Bottom%20Navigation%20Bars/Buyer/Buyer_Widgets_Functions/cart_items.dart';
+import 'package:touchable_opacity/touchable_opacity.dart';
 
 class PostDetailsScreen extends StatelessWidget {
   final String name;
   final String description;
-  final String location;
+  final String price;
   final String imagePath;
 
   const PostDetailsScreen({
     super.key,
     required this.name,
+    required this.price,
     required this.description,
-    required this.location,
     required this.imagePath,
   });
 
@@ -18,39 +24,48 @@ class PostDetailsScreen extends StatelessWidget {
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: const Color(0XFFFFFFFF),
-      appBar: AppBar(
-        elevation: 0,
-        backgroundColor: Colors.transparent,
-        leading: IconButton(
-          icon: const Padding(
-            padding: EdgeInsets.only(left: 15),
-            child: ImageIcon(AssetImage("assets/images/Icons/Back.png")),
-          ),
-          onPressed: () {
-            Navigator.pop(context);
-          },
-        ),
-      ),
       body: SingleChildScrollView(
         padding: const EdgeInsets.symmetric(horizontal: 25),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            const SizedBox(height: 20),
-            Padding(
-              padding: const EdgeInsets.only(left: 4),
-              child: Text(
-                name,
-                style: const TextStyle(
-                  letterSpacing: -0.1,
-                  fontWeight: FontWeight.bold,
-                  fontSize: 23,
+            const SizedBox(height: 48),
+            Row(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              children: [
+                // Back Arrow Icon
+                IconButton(
+                  icon: Image.asset(
+                    'assets/images/Icons/Back.png', // Your image path
+                    width: 22,
+                    height: 22,
+                  ),
+                  onPressed: () {
+                    Navigator.pop(context);
+                  },
                 ),
-              ),
+                const Text(
+                  'Details',
+                  style: TextStyle(
+                    color: Color.fromARGB(255, 27, 27, 27),
+                    fontSize: 24,
+                    fontFamily: 'Sans',
+                    letterSpacing: -0.4,
+                    fontWeight: FontWeight.bold,
+                  ),
+                ),
+                IconButton(
+                  icon: Image.asset(
+                    'assets/images/Icons/Notifications.png',
+                    width: 28,
+                    height: 28,
+                  ),
+                  onPressed: () {},
+                ),
+              ],
             ),
-            const SizedBox(
-              height: 12,
-            ),
+            const SizedBox(height: 18),
+            // Image
             ClipRRect(
               borderRadius: BorderRadius.circular(26),
               child: imagePath.startsWith('http')
@@ -59,13 +74,13 @@ class PostDetailsScreen extends StatelessWidget {
                       image: imagePath,
                       fit: BoxFit.cover,
                       width: double.infinity,
-                      height: 200,
+                      height: 250,
                       imageErrorBuilder: (context, error, stackTrace) {
                         return Image.asset(
                           'assets/images/error_image.png',
                           fit: BoxFit.cover,
                           width: double.infinity,
-                          height: 200,
+                          height: 250,
                         );
                       },
                     )
@@ -73,94 +88,175 @@ class PostDetailsScreen extends StatelessWidget {
                       imagePath,
                       fit: BoxFit.cover,
                       width: double.infinity,
-                      height: 200,
+                      height: 300,
                     ),
-            ),
-            const SizedBox(height: 30),
-            const Text(
-              'Description:',
-              style: TextStyle(
-                fontWeight: FontWeight.bold,
-                fontSize: 16,
-              ),
-            ),
-            const SizedBox(height: 5),
-            Text(
-              description,
-              style: const TextStyle(
-                fontSize: 15,
-                height: 1.4, // Adjust line height for readability
-                color: Colors.black87,
-              ),
-              textAlign: TextAlign.start, // Align text to the left
-            ),
-            const SizedBox(height: 16),
-            const Text(
-              'Location:',
-              style: TextStyle(
-                fontWeight: FontWeight.bold,
-                fontSize: 16,
-              ),
-            ),
-            const SizedBox(height: 8),
-            Text(
-              location,
-              style: const TextStyle(
-                fontSize: 14,
-                color: Colors.black54,
-              ),
             ),
             const SizedBox(height: 20),
-            Row(
+            // Title
+            Text(
+              name,
+              style: const TextStyle(
+                letterSpacing: -0.3,
+                fontWeight: FontWeight.bold,
+                fontSize: 22.5,
+              ),
+            ),
+            const SizedBox(height: 1),
+            // Star Rating and Reviews
+            const Row(
               children: [
-                Expanded(
-                  child: ElevatedButton(
-                    style: ElevatedButton.styleFrom(
-                      backgroundColor: Colors.green, // Button color
-                      padding: const EdgeInsets.symmetric(vertical: 16),
-                      shape: RoundedRectangleBorder(
-                        borderRadius:
-                            BorderRadius.circular(12), // Button border radius
-                      ),
-                    ),
-                    onPressed: () {
-                      // Handle booking action here
-                    },
-                    child: const Text(
-                      'Book Now',
-                      style: TextStyle(
-                        fontSize: 16,
-                        fontWeight: FontWeight.bold,
-                      ),
-                    ),
-                  ),
-                ),
-                const SizedBox(width: 16),
-                Expanded(
-                  child: ElevatedButton(
-                    style: ElevatedButton.styleFrom(
-                      backgroundColor: Colors.blue, // Button color
-                      padding: const EdgeInsets.symmetric(vertical: 16),
-                      shape: RoundedRectangleBorder(
-                        borderRadius:
-                            BorderRadius.circular(12), // Button border radius
-                      ),
-                    ),
-                    onPressed: () {
-                      // Handle chat action here
-                    },
-                    child: const Text(
-                      'Chat',
-                      style: TextStyle(
-                        fontSize: 16,
-                        fontWeight: FontWeight.bold,
-                      ),
-                    ),
+                Icon(Icons.star, color: Colors.amber, size: 18),
+                Icon(Icons.star, color: Colors.amber, size: 18),
+                Icon(Icons.star, color: Colors.amber, size: 18),
+                Icon(Icons.star, color: Colors.amber, size: 18),
+                Icon(Icons.star_half, color: Colors.amber, size: 18),
+                SizedBox(width: 8),
+                Text(
+                  '4.0/5 (45 reviews)',
+                  style: TextStyle(
+                    fontSize: 14,
+                    color: Colors.grey,
                   ),
                 ),
               ],
             ),
+            const SizedBox(height: 16),
+            // Description Section
+            Padding(
+              padding: const EdgeInsets.symmetric(vertical: 10),
+              child: Text(
+                price,
+                style: const TextStyle(
+                  fontSize: 15,
+                  height: 1.4,
+                  color: Colors.black87,
+                ),
+              ),
+            ),
             const SizedBox(height: 20),
+            // Price Section
+            const Text(
+              'Price',
+              style: TextStyle(
+                fontWeight: FontWeight.normal,
+                fontSize: 18.5,
+                letterSpacing: -0.2,
+                color: Color.fromARGB(255, 162, 161, 161),
+              ),
+            ),
+            Text(
+              'Rs.$description',
+              style: const TextStyle(
+                fontSize: 21,
+                letterSpacing: -0.3,
+                fontWeight: FontWeight.bold,
+                color: Color.fromARGB(255, 45, 45, 45),
+              ),
+            ),
+            const SizedBox(height: 25),
+
+            // Add to Cart Button (Primary Button)
+            SizedBox(
+              width: double.infinity,
+              child: ElevatedButton(
+                style: ElevatedButton.styleFrom(
+                  backgroundColor: Colors.black, // Button color
+                  padding: const EdgeInsets.symmetric(vertical: 16),
+                  shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(14),
+                  ),
+                ),
+                onPressed: () {
+                  // Create a CartItem with all necessary fields
+                  final cartItem = CartItem(
+                    id: name, // You can use a unique ID here like a product ID
+                    name: name, // Product name
+                    imagePath: imagePath, // Product image path
+                    price: double.parse(
+                        description), // Ensure the price is a double
+                  );
+
+                  // Add the item to the cart using CartProvider
+                  Provider.of<CartProvider>(context, listen: false)
+                      .addItem(cartItem);
+
+                  // Show a snackbar to notify the user
+                  Get.snackbar(
+                    backgroundColor: Colors.green.withOpacity(0.4),
+                    "Successfully",
+                    "Added to Cart!",
+                    titleText: const Center(
+                      child: Text(
+                        "Successfully",
+                        style: TextStyle(
+                            fontWeight: FontWeight.bold,
+                            fontSize: 16,
+                            letterSpacing: -0.4,
+                            color: Colors.white,
+                            fontFamily: 'Rubik'),
+                      ),
+                    ),
+                    messageText: const SizedBox(
+                      height: 20,
+                      child: Center(
+                        child: Text(
+                          "Added to Cart!",
+                          style: TextStyle(
+                            fontSize: 14.3,
+                            fontFamily: 'Rubik',
+                            letterSpacing: -0.4,
+                            color: Colors.white,
+                          ),
+                          textAlign: TextAlign.center,
+                        ),
+                      ),
+                    ),
+                    margin: const EdgeInsets.all(4),
+                    borderRadius: 10,
+                  );
+                },
+                child: const Text(
+                  'Add to Cart',
+                  style: TextStyle(
+                    fontSize: 16,
+                    letterSpacing: -0.3,
+                    fontWeight: FontWeight.bold,
+                    color: Colors.white,
+                  ),
+                ),
+              ),
+            ),
+            const SizedBox(height: 20),
+
+            // Chat Button (Secondary Button)
+            SizedBox(
+              width: double.infinity,
+              child: OutlinedButton(
+                style: OutlinedButton.styleFrom(
+                  side: const BorderSide(color: Colors.black),
+                  padding: const EdgeInsets.symmetric(vertical: 16),
+                  shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(14),
+                  ),
+                ),
+                onPressed: () {
+                  // Handle chat action here
+                },
+                child: TouchableOpacity(
+                  activeOpacity: 0.2,
+                  child: const Text(
+                    'Chat',
+                    style: TextStyle(
+                      fontSize: 16,
+                      letterSpacing: -0.3,
+                      fontWeight: FontWeight.bold,
+                      color: Colors.black,
+                    ),
+                  ),
+                ),
+              ),
+            ),
+            const SizedBox(height: 22),
           ],
         ),
       ),

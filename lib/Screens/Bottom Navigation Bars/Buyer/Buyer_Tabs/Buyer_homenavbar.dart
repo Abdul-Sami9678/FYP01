@@ -15,7 +15,9 @@ class BuyerHomenavbar extends StatefulWidget {
 class _BuyerHomenavbarState extends State<BuyerHomenavbar> {
   // Realtime database reference for fetching posts
   final dbRef = FirebaseDatabase.instance.ref().child('Posts');
-  final TextEditingController _searchController = TextEditingController();
+  final TextEditingController _searchController =
+      TextEditingController(); // Searchbar Controller......
+  String search = "";
 
   // Example list of random names
   final List<String> names = [
@@ -120,11 +122,14 @@ class _BuyerHomenavbarState extends State<BuyerHomenavbar> {
     setState(() {});
   }
 
+  // Handle search query changes here
   void _onSearchChanged(String value) {
-    // Handle search query changes here
-    print('Search query: $value');
+    setState(() {
+      search = value;
+    });
   }
 
+//Browse Categories information...........
   void _showBottomSheet(
     String name,
     String description,
@@ -233,13 +238,14 @@ class _BuyerHomenavbarState extends State<BuyerHomenavbar> {
     );
   }
 
+//Moved to Posts Info..............
   void _navigateToDetailsScreen(
     String name,
+    String price,
     String description,
-    String? nutrients,
-    String? vitamins,
-    String? dishes,
-    String location,
+    // String? nutrients,
+    // String? vitamins,
+    // String? dishes,
     String imagePath,
   ) {
     Navigator.push(
@@ -247,8 +253,8 @@ class _BuyerHomenavbarState extends State<BuyerHomenavbar> {
       MaterialPageRoute(
         builder: (context) => PostDetailsScreen(
           name: name,
+          price: price,
           description: description,
-          location: location,
           imagePath: imagePath,
         ),
       ),
@@ -258,11 +264,11 @@ class _BuyerHomenavbarState extends State<BuyerHomenavbar> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: const Color.fromARGB(255, 222, 44, 44),
+      backgroundColor: const Color(0XFFFFFFFF),
       body: RefreshIndicator(
         onRefresh: _refresh,
         color: Colors.black,
-        backgroundColor: const Color.fromARGB(255, 161, 11, 11),
+        backgroundColor: const Color(0XFFFFFFFF),
         child: ListView(
           children: [
             Padding(
@@ -274,6 +280,7 @@ class _BuyerHomenavbarState extends State<BuyerHomenavbar> {
                   const SizedBox(height: 15),
                   const GreetingWidget(),
                   const SizedBox(height: 22),
+                  //Search Bar Logic.......
                   SearchBarBuyer(
                     controller: _searchController,
                     onChanged: _onSearchChanged,
@@ -292,6 +299,7 @@ class _BuyerHomenavbarState extends State<BuyerHomenavbar> {
                   SizedBox(
                     height: 75,
                     child: ListView.builder(
+                      // To show posts...........
                       scrollDirection: Axis.horizontal,
                       itemCount: names.length,
                       itemBuilder: (context, index) {
@@ -374,25 +382,31 @@ class _BuyerHomenavbarState extends State<BuyerHomenavbar> {
                           Animation<double> animation, int index) {
                         if (snapshot.value is Map) {
                           final post = snapshot.value as Map;
+
+                          // Filter by search query
+                          String postTitle = post['pTitle'] ?? 'No Title';
+                          if (search.isNotEmpty &&
+                              !postTitle
+                                  .toLowerCase()
+                                  .contains(search.toLowerCase())) {
+                            return const SizedBox(); // Don't show posts that don't match the search query
+                          }
+
                           return Padding(
                             padding: const EdgeInsets.only(
                                 bottom:
                                     24.0), // Increased padding for more space between posts
                             child: GestureDetector(
                               onTap: () {
-                                WidgetsBinding.instance
-                                    .addPostFrameCallback((_) {
-                                  _navigateToDetailsScreen(
-                                    post['pTitle'] ?? 'No Title',
-                                    post['pDescription'] ?? 'No Description',
-                                    post['pNutrients'] ?? 'No Nutrients',
-                                    post['pVitamins'] ?? 'No Vitamins',
-                                    post['pDishes'] ?? 'No Dishes',
-                                    post['pLocation'] ?? 'No Location',
-                                    post['pImage'] ??
-                                        'assets/images/default.jpg',
-                                  );
-                                });
+                                _navigateToDetailsScreen(
+                                  post['pTitle'] ?? 'No Title',
+                                  post['pDescription'] ?? 'No Description',
+                                  //post['pNutrients'] ?? 'No Nutrients',
+                                  //post['pVitamins'] ?? 'No Vitamins',
+                                  //post['pDishes'] ?? 'No Dishes',
+                                  post['pPrice'] ?? 'No Price',
+                                  post['pImage'] ?? 'assets/images/default.jpg',
+                                );
                               },
                               child: ClipRRect(
                                 borderRadius: BorderRadius.circular(12),
@@ -403,7 +417,7 @@ class _BuyerHomenavbarState extends State<BuyerHomenavbar> {
                                       borderRadius: BorderRadius.circular(
                                           12), // Ensures image corners are rounded
                                       child: FadeInImage.assetNetwork(
-                                        placeholder: 'assets/images/Post.jpg',
+                                        placeholder: 'assets/images/Post2.jpg',
                                         image: post['pImage'] ?? '',
                                         width: double.infinity,
                                         height: 200,

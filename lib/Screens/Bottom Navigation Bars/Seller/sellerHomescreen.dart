@@ -17,11 +17,32 @@ class Sellerhomescreen extends StatefulWidget {
 
 class _SellerhomescreenState extends State<Sellerhomescreen> {
   int myIndex = 0;
+  late PageController _pageController;
 
+  @override
+  void initState() {
+    super.initState();
+    // Initialize the PageController
+    _pageController = PageController(initialPage: myIndex);
+  }
+
+  @override
+  void dispose() {
+    _pageController.dispose();
+    super.dispose();
+  }
+
+  // Method to navigate to a page
   void _navigateBottomNavBar(int index) {
     setState(() {
       myIndex = index;
     });
+    // Animate the page change
+    _pageController.animateToPage(
+      index,
+      duration: const Duration(milliseconds: 300),
+      curve: Curves.easeInOut,
+    );
   }
 
   @override
@@ -29,24 +50,26 @@ class _SellerhomescreenState extends State<Sellerhomescreen> {
     final List<Widget> pageList = <Widget>[
       const SellerDashboardHome(),
       const SellerChatnavbar(),
-      SellerPostcreatenavbar(
-        onBottomSheetClosed: () {
-          _navigateBottomNavBar(0); // Navigate to index 0 (home tab)
-        },
-      ),
+      const SellerPostcreatenavbar(),
       const SellerCartNavbar(),
-      SellerProfilenavbar(
-        onBackButtonPressed: () {
-          _navigateBottomNavBar(0); // Navigate to index 0 (home tab)
-        },
-      ),
+      const SellerProfilenavbar(),
     ];
 
     return Scaffold(
       resizeToAvoidBottomInset: false,
       body: Stack(
         children: [
-          pageList[myIndex],
+          // PageView for swiping between pages
+          PageView(
+            controller: _pageController,
+            onPageChanged: (index) {
+              setState(() {
+                myIndex = index; // Update the bottom navigation index on swipe
+              });
+            },
+            children: pageList,
+          ),
+          // Bottom Navigation Bar
           Positioned(
             left: 16,
             right: 16,

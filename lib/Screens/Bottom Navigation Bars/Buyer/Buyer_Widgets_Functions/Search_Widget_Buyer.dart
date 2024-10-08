@@ -38,6 +38,7 @@ class _SearchBarBuyerState extends State<SearchBarBuyer> {
         width: 330, // Width of the TextField
         child: TextField(
           controller: widget.controller,
+          keyboardType: TextInputType.text, // Changed from emailAddress to text
           onChanged: widget.onChanged,
           focusNode: _focusNode,
           cursorColor: const Color.fromARGB(
@@ -50,21 +51,36 @@ class _SearchBarBuyerState extends State<SearchBarBuyer> {
               color: Color.fromARGB(
                   255, 52, 52, 52), // Set hint text color to dark grey
             ),
-            suffixIcon: Padding(
-              padding: const EdgeInsets.all(16.0), // Adjust padding as needed
-              child: SizedBox(
-                width: 22, // Set desired width for the icon
-                height: 22, // Set desired height for the icon
-                child: TouchableOpacity(
-                  activeOpacity: 0.2,
-                  child: Image.asset(
-                    'assets/images/Icons/Search.png', // Replace with your image path
-                    fit: BoxFit
-                        .contain, // Ensure the image fits within the SizedBox
+            // Clear button when input is not empty
+            suffixIcon: widget.controller.text.isNotEmpty
+                ? IconButton(
+                    icon: Icon(Icons.clear, color: Colors.grey[600]),
+                    onPressed: () {
+                      widget.controller.clear();
+                      widget.onChanged(''); // Reset search on clear
+                      FocusScope.of(context).unfocus(); // Hide keyboard
+                    },
+                  )
+                : Padding(
+                    padding: const EdgeInsets.all(16.0), // Adjust padding
+                    child: SizedBox(
+                      width: 22, // Set desired width for the icon
+                      height: 22, // Set desired height for the icon
+                      child: TouchableOpacity(
+                        activeOpacity: 0.2,
+                        child: Image.asset(
+                          'assets/images/Icons/Search.png', // Replace with your image path
+                          fit: BoxFit
+                              .contain, // Ensure the image fits within the SizedBox
+                        ),
+                        onTap: () {
+                          // Optional: Trigger search logic when tapped
+                          widget.onChanged(widget.controller.text);
+                          FocusScope.of(context).unfocus(); // Hide keyboard
+                        },
+                      ),
+                    ),
                   ),
-                ),
-              ),
-            ),
             filled: true,
             fillColor: const Color.fromARGB(255, 244, 245, 248),
             border: OutlineInputBorder(
