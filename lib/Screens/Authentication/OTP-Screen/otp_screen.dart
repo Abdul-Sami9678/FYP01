@@ -39,7 +39,7 @@ class _OTPScreenState extends State<OTPScreen> {
 
       if (user != null) {
         await saveUserDataToFirestore(user);
-        Get.offAll(() => const Home_Screen());
+        Get.offAll(() => const HomeScreen());
       } else {
         Get.snackbar("Error", "User sign-in failed.");
       }

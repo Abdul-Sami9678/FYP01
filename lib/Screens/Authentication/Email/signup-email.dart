@@ -141,7 +141,7 @@ class _SignupEmailState extends State<SignupEmail> {
             borderRadius: 10,
           );
 
-          Navigator.pushNamed(context, Home_Screen.id);
+          Navigator.pushNamed(context, HomeScreen.id);
         } else {
           print('User credential is null');
           Get.snackbar(
@@ -360,12 +360,6 @@ class _SignupEmailState extends State<SignupEmail> {
                       height: 7,
                     ),
                     TextFormField(
-                      // validator: (value) {
-                      //   if (value == null || value.isEmpty) {
-                      //     return "Enter name";
-                      //   }
-                      //   return null;
-                      // },
                       validator: _validateUsername,
                       controller: usernameController,
                       onChanged: (value) {

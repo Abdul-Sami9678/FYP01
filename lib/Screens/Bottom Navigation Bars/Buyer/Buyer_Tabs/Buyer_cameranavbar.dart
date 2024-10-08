@@ -6,9 +6,7 @@ import 'package:image_picker/image_picker.dart';
 import 'package:lottie/lottie.dart';
 
 class BuyerCameranavbar extends StatefulWidget {
-  final VoidCallback onBottomSheetClosed;
-
-  const BuyerCameranavbar({super.key, required this.onBottomSheetClosed});
+  const BuyerCameranavbar({super.key});
 
   @override
   State<BuyerCameranavbar> createState() => _BuyerCameranavbarState();
@@ -17,15 +15,8 @@ class BuyerCameranavbar extends StatefulWidget {
 class _BuyerCameranavbarState extends State<BuyerCameranavbar> {
   Uint8List? _image;
   File? selectedImage;
-  @override
-  void initState() {
-    super.initState();
-    WidgetsBinding.instance.addPostFrameCallback((_) {
-      _showBottomSheet();
-    });
-  }
 
-//Image pick from Gallery................
+  // Image pick from Camera
   Future _pickImageFromCamera() async {
     final returnImage =
         await ImagePicker().pickImage(source: ImageSource.camera);
@@ -36,7 +27,7 @@ class _BuyerCameranavbarState extends State<BuyerCameranavbar> {
     });
   }
 
-//Image pick from Gallery................
+  // Image pick from Gallery
   Future _pickImageFromGallery() async {
     final returnImage =
         await ImagePicker().pickImage(source: ImageSource.gallery);
@@ -47,7 +38,7 @@ class _BuyerCameranavbarState extends State<BuyerCameranavbar> {
     });
   }
 
-//Bottom Sheet to Display................
+  // Bottom Sheet to Display
   void _showBottomSheet() {
     showModalBottomSheet(
       backgroundColor: const Color.fromARGB(255, 248, 246, 246),
@@ -66,9 +57,7 @@ class _BuyerCameranavbarState extends State<BuyerCameranavbar> {
                     image: DecorationImage(
                         image: AssetImage("assets/images/Icons/Bar.png"))),
               ),
-              const SizedBox(
-                height: 58,
-              ),
+              const SizedBox(height: 58),
               Row(
                 mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                 children: <Widget>[
@@ -76,22 +65,25 @@ class _BuyerCameranavbarState extends State<BuyerCameranavbar> {
                   InkWell(
                     onTap: () {
                       _pickImageFromGallery();
+                      Navigator.pop(
+                          context); // Close bottom sheet after picking
                     },
                     child: const ImageIcon(
                       AssetImage(
-                          'assets/images/Icons/Gallery.png'), // Gallery Icon........
+                          'assets/images/Icons/Gallery.png'), // Gallery Icon
                       size: 50.5,
                     ),
                   ),
-
-                  // Camera Icon..........
+                  // Camera Icon
                   InkWell(
                     onTap: () {
                       _pickImageFromCamera();
+                      Navigator.pop(
+                          context); // Close bottom sheet after picking
                     },
                     child: const ImageIcon(
                       AssetImage(
-                          'assets/images/Icons/Camera1.png'), // Camera Icon..........
+                          'assets/images/Icons/Camera1.png'), // Camera Icon
                       size: 50.5,
                     ),
                   ),
@@ -101,10 +93,7 @@ class _BuyerCameranavbarState extends State<BuyerCameranavbar> {
           ),
         );
       },
-    ).whenComplete(() {
-      widget
-          .onBottomSheetClosed(); // Navigate to home tab after bottom sheet closes
-    });
+    );
   }
 
   @override
@@ -112,10 +101,46 @@ class _BuyerCameranavbarState extends State<BuyerCameranavbar> {
     return Scaffold(
       backgroundColor: const Color(0XFFFFFFFF),
       body: Center(
-        child: Lottie.asset(
-          "assets/Animations/Loading4.json",
-          height: 135, // Adjust the height as needed
-          width: 135, // Adjust the width as needed
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            // Lottie Animation or Selected Image
+            _image == null
+                ? Lottie.asset(
+                    "assets/Animations/S3.json",
+                    height: 160, // Adjust the height as needed
+                    width: 200, // Adjust the width as needed
+                  )
+                : Image.memory(
+                    _image!), // Display the selected image if available
+            const SizedBox(
+              height: 7,
+            ),
+            // Button to Open Bottom Sheet Manually
+            ElevatedButton.icon(
+              onPressed: () {
+                // Handle button action here
+                _showBottomSheet();
+              },
+              style: ElevatedButton.styleFrom(
+                backgroundColor: Colors.black, // Button background color
+                padding: const EdgeInsets.symmetric(
+                    vertical: 15, horizontal: 50), // Padding inside the button
+                shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(17), // Rounded corners
+                ),
+              ),
+              label: const Text(
+                'Classify', // Button text
+                style: TextStyle(
+                  fontSize: 17, // Text size
+                  fontFamily: 'Sans',
+                  letterSpacing: -0.2,
+                  color: Colors.white, // Text color
+                ),
+              ),
+            )
+          ],
         ),
       ),
     );

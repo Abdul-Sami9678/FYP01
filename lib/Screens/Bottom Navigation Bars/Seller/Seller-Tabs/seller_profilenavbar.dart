@@ -15,9 +15,7 @@ import 'package:rice_application/Screens/Profile-Controller/profile_controller.d
 import 'package:touchable_opacity/touchable_opacity.dart';
 
 class SellerProfilenavbar extends StatefulWidget {
-  final VoidCallback? onBackButtonPressed;
-
-  const SellerProfilenavbar({super.key, this.onBackButtonPressed});
+  const SellerProfilenavbar({super.key});
 
   @override
   State<SellerProfilenavbar> createState() => _SellerProfilenavbarState();
@@ -216,22 +214,13 @@ class _SellerProfilenavbarState extends State<SellerProfilenavbar> {
                             children: [
                               TouchableOpacity(
                                 activeOpacity: 0.3,
-                                child: GestureDetector(
-                                  onTap: () {
-                                    if (widget.onBackButtonPressed != null) {
-                                      widget.onBackButtonPressed!();
-                                    } else {
-                                      Navigator.of(context).pop();
-                                    }
-                                  },
-                                  child: Container(
-                                    height: 22,
-                                    width: 22,
-                                    decoration: const BoxDecoration(
-                                      image: DecorationImage(
-                                        image: AssetImage(
-                                            'assets/images/Icons/Back1.png'),
-                                      ),
+                                child: Container(
+                                  height: 22,
+                                  width: 22,
+                                  decoration: const BoxDecoration(
+                                    image: DecorationImage(
+                                      image: AssetImage(
+                                          'assets/images/Icons/Back1.png'),
                                     ),
                                   ),
                                 ),
@@ -275,7 +264,7 @@ class _SellerProfilenavbarState extends State<SellerProfilenavbar> {
                                             ? FileImage(
                                                 File(provider.image!.path))
                                             : const AssetImage(
-                                                    "assets/images/Profile.jpg")
+                                                    "assets/images/Post1.jpg")
                                                 as ImageProvider,
                                   ),
                                   Positioned(
@@ -369,8 +358,7 @@ class _SellerProfilenavbarState extends State<SellerProfilenavbar> {
                                     Navigator.pop(context);
 
                                     // Switch to the seller dashboard
-                                    Navigator.pushNamed(
-                                        context, Home_Screen.id);
+                                    Navigator.pushNamed(context, HomeScreen.id);
                                   },
                                   child: const Text(
                                     'Buyer mode',
@@ -863,8 +851,7 @@ class _SellerProfilenavbarState extends State<SellerProfilenavbar> {
                                     Navigator.pop(context);
 
                                     // Switch to the seller dashboard
-                                    Navigator.pushNamed(
-                                        context, Home_Screen.id);
+                                    Navigator.pushNamed(context, HomeScreen.id);
                                   },
                                   child: const Text(
                                     'Buyer mode',
@@ -1358,8 +1345,7 @@ class _SellerProfilenavbarState extends State<SellerProfilenavbar> {
                                     Navigator.pop(context);
 
                                     // Switch to the seller dashboard
-                                    Navigator.pushNamed(
-                                        context, Home_Screen.id);
+                                    Navigator.pushNamed(context, HomeScreen.id);
                                   },
                                   child: const Text(
                                     'Buyer mode',

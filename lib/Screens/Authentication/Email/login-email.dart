@@ -151,7 +151,7 @@ class _EmailLoginState extends State<EmailLogin> {
         );
 
         // Navigate to the home screen or other logic
-        Navigator.pushNamed(context, Home_Screen.id);
+        Navigator.pushNamed(context, HomeScreen.id);
       }
     } on FirebaseAuthException catch (e) {
       // Close the loading dialog since an error occurred

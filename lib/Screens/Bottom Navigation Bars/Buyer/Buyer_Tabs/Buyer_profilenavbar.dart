@@ -15,9 +15,7 @@ import 'package:rice_application/Screens/Profile-Controller/profile_controller.d
 import 'package:touchable_opacity/touchable_opacity.dart';
 
 class BuyerProfilenavbar extends StatefulWidget {
-  final VoidCallback? onBackButtonPressed;
-
-  const BuyerProfilenavbar({super.key, this.onBackButtonPressed});
+  const BuyerProfilenavbar({super.key});
 
   @override
   State<BuyerProfilenavbar> createState() => _BuyerProfilenavbarState();
@@ -212,22 +210,13 @@ class _BuyerProfilenavbarState extends State<BuyerProfilenavbar> {
                             children: [
                               TouchableOpacity(
                                 activeOpacity: 0.3,
-                                child: GestureDetector(
-                                  onTap: () {
-                                    if (widget.onBackButtonPressed != null) {
-                                      widget.onBackButtonPressed!();
-                                    } else {
-                                      Navigator.of(context).pop();
-                                    }
-                                  },
-                                  child: Container(
-                                    height: 22,
-                                    width: 22,
-                                    decoration: const BoxDecoration(
-                                      image: DecorationImage(
-                                        image: AssetImage(
-                                            'assets/images/Icons/Back1.png'),
-                                      ),
+                                child: Container(
+                                  height: 22,
+                                  width: 22,
+                                  decoration: const BoxDecoration(
+                                    image: DecorationImage(
+                                      image: AssetImage(
+                                          'assets/images/Icons/Back1.png'),
                                     ),
                                   ),
                                 ),
@@ -369,7 +358,7 @@ class _BuyerProfilenavbarState extends State<BuyerProfilenavbar> {
                                         context, Sellerhomescreen.id);
                                   },
                                   child: const Text(
-                                    'Seller mode',
+                                    "Farmer mode",
                                     style: TextStyle(
                                       color: Colors.white,
                                       fontSize: 16.5,
