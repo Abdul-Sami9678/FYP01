@@ -96,6 +96,8 @@ flutter:
     - assets/Logos/
     - assets/images/Icons/
     - assets/Animations/
+    - assets/images/Research/Seed/
+    - assets/images/Research/Water/
     - assets/.env
   #   - images/a_dot_ham.jpeg
 
