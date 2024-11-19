@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:geocoding/geocoding.dart'; // Import for reverse geocoding
 import 'package:geolocator/geolocator.dart'; // Import for geolocation
+import 'package:rice_application/Screens/Bottom%20Navigation%20Bars/Seller/Seller_Widget_Functions/WaterDetails.dart';
+import 'package:rice_application/Screens/Bottom%20Navigation%20Bars/Seller/Seller_Widget_Functions/seedDetails.dart';
 import 'package:weather/weather.dart';
 
 class SellerDashboardHome extends StatefulWidget {
@@ -38,12 +40,10 @@ class _SellerDashboardHomeState extends State<SellerDashboardHome> {
     });
   }
 
-  // Get current position (latitude, longitude)
   Future<Position> _determinePosition() async {
     bool serviceEnabled;
     LocationPermission permission;
 
-    // Check if location services are enabled.
     serviceEnabled = await Geolocator.isLocationServiceEnabled();
     if (!serviceEnabled) {
       return Future.error('Location services are disabled.');
@@ -62,21 +62,126 @@ class _SellerDashboardHomeState extends State<SellerDashboardHome> {
           'Location permissions are permanently denied, we cannot request permissions.');
     }
 
-    // Get the current position
     return await Geolocator.getCurrentPosition();
   }
 
-  // Reverse geocode to get the city and country name from latitude and longitude
   Future<List<String>> _getCityNameFromCoordinates(
       double latitude, double longitude) async {
     List<Placemark> placemarks =
         await placemarkFromCoordinates(latitude, longitude);
 
-    Placemark place = placemarks[0]; // We take the first placemark result
+    Placemark place = placemarks[0];
     return [
       place.locality ?? "Unknown City",
       place.country ?? "Unknown Country"
     ];
+  }
+
+  void _showWeatherDetails() {
+    showModalBottomSheet(
+      backgroundColor: const Color(0XFFFFFFFF),
+      context: context,
+      shape: const RoundedRectangleBorder(
+        borderRadius: BorderRadius.vertical(
+          top: Radius.circular(33.0),
+        ),
+      ),
+      isScrollControlled: true,
+      builder: (BuildContext context) {
+        return FractionallySizedBox(
+          heightFactor: 0.34,
+          child: Padding(
+            padding: const EdgeInsets.all(16.0),
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Wrap(
+                  alignment: WrapAlignment.center,
+                  spacing: 10,
+                  runSpacing: 10,
+                  children: [
+                    SizedBox(
+                      width: (MediaQuery.of(context).size.width / 2) - 30,
+                      child: _buildDetailCard(
+                        icon: Icons.thermostat_rounded,
+                        iconColor: Colors.red,
+                        label: "Max",
+                        value:
+                            "${_weather?.tempMax?.celsius?.toStringAsFixed(0)}° C",
+                      ),
+                    ),
+                    SizedBox(
+                      width: (MediaQuery.of(context).size.width / 2) - 30,
+                      child: _buildDetailCard(
+                        icon: Icons.thermostat_auto,
+                        iconColor: Colors.blue,
+                        label: "Min",
+                        value:
+                            "${_weather?.tempMin?.celsius?.toStringAsFixed(0)}° C",
+                      ),
+                    ),
+                    SizedBox(
+                      width: (MediaQuery.of(context).size.width / 2) - 30,
+                      child: _buildDetailCard(
+                        icon: Icons.wind_power,
+                        iconColor: Colors.green,
+                        label: "Wind Speed",
+                        value: "${_weather?.windSpeed?.toStringAsFixed(0)} m/s",
+                      ),
+                    ),
+                    SizedBox(
+                      width: (MediaQuery.of(context).size.width / 2) - 30,
+                      child: _buildDetailCard(
+                        icon: Icons.water_drop,
+                        iconColor: Colors.blueAccent,
+                        label: "Humidity",
+                        value: "${_weather?.humidity?.toStringAsFixed(0)}%",
+                      ),
+                    ),
+                  ],
+                ),
+              ],
+            ),
+          ),
+        );
+      },
+    );
+  }
+
+  Widget _buildDetailCard({
+    required IconData icon,
+    required Color iconColor,
+    required String label,
+    required String value,
+  }) {
+    return Container(
+      padding: const EdgeInsets.all(12.0),
+      decoration: BoxDecoration(
+        borderRadius: BorderRadius.circular(10),
+        color: Colors.yellow[100],
+      ),
+      child: Column(
+        mainAxisSize: MainAxisSize.min,
+        children: [
+          Icon(icon, color: iconColor, size: 40),
+          const SizedBox(height: 10),
+          Text(
+            label,
+            style: const TextStyle(
+              fontWeight: FontWeight.bold,
+              fontSize: 14,
+            ),
+          ),
+          const SizedBox(height: 5),
+          Text(
+            value,
+            style: const TextStyle(
+              fontSize: 14,
+            ),
+          ),
+        ],
+      ),
+    );
   }
 
   @override
@@ -89,14 +194,40 @@ class _SellerDashboardHomeState extends State<SellerDashboardHome> {
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              // Weather Card positioned at the top
-              _buildWeatherCard(),
-              const SizedBox(height: 20),
-              // Add additional items below here in the future
-              Text(
-                "Additional items can be placed here...",
-                style: TextStyle(color: Colors.grey[700], fontSize: 16),
+              GestureDetector(
+                onTap: _showWeatherDetails,
+                child: _buildWeatherCard(),
               ),
+              const SizedBox(height: 40),
+              const Padding(
+                padding: EdgeInsets.only(left: 11.0),
+                child: Text(
+                  "Water Schedule",
+                  style: TextStyle(
+                      color: Colors.black,
+                      fontSize: 22.4,
+                      fontWeight: FontWeight.bold,
+                      fontFamily: 'Sans',
+                      letterSpacing: -0.5),
+                ),
+              ),
+              const SizedBox(height: 7),
+              const WaterCards(),
+              const SizedBox(height: 25),
+              const Padding(
+                padding: EdgeInsets.only(left: 11.0),
+                child: Text(
+                  "Seedling Navigation",
+                  style: TextStyle(
+                      color: Colors.black,
+                      fontSize: 22.4,
+                      fontWeight: FontWeight.bold,
+                      fontFamily: 'Sans',
+                      letterSpacing: -0.5),
+                ),
+              ),
+              const SizedBox(height: 7),
+              const SeedCards(),
             ],
           ),
         ),
@@ -109,7 +240,6 @@ class _SellerDashboardHomeState extends State<SellerDashboardHome> {
       padding: const EdgeInsets.all(20),
       decoration: BoxDecoration(
         borderRadius: BorderRadius.circular(20),
-        // Set the background image inside the card
         image: const DecorationImage(
           image: NetworkImage(
               'https://plus.unsplash.com/premium_photo-1669809948017-518b5d800d73?q=80&w=1887&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D'),
@@ -130,29 +260,25 @@ class _SellerDashboardHomeState extends State<SellerDashboardHome> {
               mainAxisSize: MainAxisSize.min,
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                // Temperature, Wind Speed, and Weather Icon Row
                 Row(
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [
                     Row(
                       crossAxisAlignment: CrossAxisAlignment.center,
                       children: [
-                        // Temperature
                         Text(
                           "${_weather?.temperature?.celsius?.toStringAsFixed(0)}°C",
                           style: const TextStyle(
                             fontSize: 40,
                             fontWeight: FontWeight.bold,
-                            color: Colors
-                                .white, // White text to contrast with the background
+                            color: Colors.white,
                           ),
                         ),
                         const SizedBox(width: 12),
-                        // Wind speed with icon
                         Row(
                           children: [
                             const Icon(
-                              Icons.wind_power, // Wind icon
+                              Icons.wind_power,
                               color: Colors.white,
                               size: 24,
                             ),
@@ -161,38 +287,22 @@ class _SellerDashboardHomeState extends State<SellerDashboardHome> {
                               "${_weather?.windSpeed?.toStringAsFixed(0)} m/s",
                               style: const TextStyle(
                                 fontSize: 16,
-                                color: Colors
-                                    .white, // White text to contrast with the background
+                                color: Colors.white,
                               ),
                             ),
                           ],
                         ),
                       ],
                     ),
-                    // Weather Icon
-                    if (weatherIconUrl != null)
-                      Image.network(
-                        weatherIconUrl!,
-                        height: 60,
-                        width: 60,
-                        errorBuilder: (context, error, stackTrace) {
-                          return const Icon(
-                            Icons.error,
-                            color: Colors.red,
-                          );
-                        },
-                      ),
                   ],
                 ),
                 const SizedBox(height: 2),
-                // City and Country name
                 Text(
                   '$cityName, $countryName',
                   style: const TextStyle(
                     fontSize: 16,
                     fontWeight: FontWeight.w400,
-                    color: Colors
-                        .white, // White text to contrast with the background
+                    color: Colors.white,
                   ),
                 ),
               ],
