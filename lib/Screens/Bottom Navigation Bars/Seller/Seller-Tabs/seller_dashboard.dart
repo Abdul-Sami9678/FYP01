@@ -40,10 +40,12 @@ class _SellerDashboardHomeState extends State<SellerDashboardHome> {
     });
   }
 
+  // Get current position (latitude, longitude)
   Future<Position> _determinePosition() async {
     bool serviceEnabled;
     LocationPermission permission;
 
+    // Check if location services are enabled.
     serviceEnabled = await Geolocator.isLocationServiceEnabled();
     if (!serviceEnabled) {
       return Future.error('Location services are disabled.');
@@ -62,21 +64,24 @@ class _SellerDashboardHomeState extends State<SellerDashboardHome> {
           'Location permissions are permanently denied, we cannot request permissions.');
     }
 
+    // Get the current position
     return await Geolocator.getCurrentPosition();
   }
 
+  // Reverse geocode to get the city and country name from latitude and longitude
   Future<List<String>> _getCityNameFromCoordinates(
       double latitude, double longitude) async {
     List<Placemark> placemarks =
         await placemarkFromCoordinates(latitude, longitude);
 
-    Placemark place = placemarks[0];
+    Placemark place = placemarks[0]; // We take the first placemark result
     return [
       place.locality ?? "Unknown City",
       place.country ?? "Unknown Country"
     ];
   }
 
+  // Function to show bottom sheet with more weather details
   void _showWeatherDetails() {
     showModalBottomSheet(
       backgroundColor: const Color(0XFFFFFFFF),
@@ -85,23 +90,27 @@ class _SellerDashboardHomeState extends State<SellerDashboardHome> {
         borderRadius: BorderRadius.vertical(
           top: Radius.circular(33.0),
         ),
-      ),
-      isScrollControlled: true,
+      ), // Rounded corners for the bottom sheet
+      isScrollControlled:
+          true, // Makes the bottom sheet scrollable if content overflows
       builder: (BuildContext context) {
         return FractionallySizedBox(
-          heightFactor: 0.34,
+          heightFactor: 0.34, // Adjust the height of the bottom sheet
           child: Padding(
             padding: const EdgeInsets.all(16.0),
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
+                // Weather details organized in a grid-like structure (2 items per row)
                 Wrap(
                   alignment: WrapAlignment.center,
-                  spacing: 10,
-                  runSpacing: 10,
+                  spacing: 10, // Horizontal space between items
+                  runSpacing: 10, // Vertical space between rows
                   children: [
+                    // Each item will take half of the available width
                     SizedBox(
-                      width: (MediaQuery.of(context).size.width / 2) - 30,
+                      width: (MediaQuery.of(context).size.width / 2) -
+                          30, // Two items per row
                       child: _buildDetailCard(
                         icon: Icons.thermostat_rounded,
                         iconColor: Colors.red,
@@ -148,6 +157,7 @@ class _SellerDashboardHomeState extends State<SellerDashboardHome> {
     );
   }
 
+// This widget will create a weather detail card with an icon and corresponding value
   Widget _buildDetailCard({
     required IconData icon,
     required Color iconColor,
@@ -158,7 +168,7 @@ class _SellerDashboardHomeState extends State<SellerDashboardHome> {
       padding: const EdgeInsets.all(12.0),
       decoration: BoxDecoration(
         borderRadius: BorderRadius.circular(10),
-        color: Colors.yellow[100],
+        color: Colors.yellow[0], // Adjust the background color as needed
       ),
       child: Column(
         mainAxisSize: MainAxisSize.min,
@@ -194,11 +204,13 @@ class _SellerDashboardHomeState extends State<SellerDashboardHome> {
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
+              // Weather Card positioned at the top
               GestureDetector(
-                onTap: _showWeatherDetails,
+                onTap: _showWeatherDetails, // Trigger bottom sheet on tap
                 child: _buildWeatherCard(),
               ),
               const SizedBox(height: 40),
+              // Add additional items below here in the future
               const Padding(
                 padding: EdgeInsets.only(left: 11.0),
                 child: Text(
@@ -217,7 +229,7 @@ class _SellerDashboardHomeState extends State<SellerDashboardHome> {
               const Padding(
                 padding: EdgeInsets.only(left: 11.0),
                 child: Text(
-                  "Seedling Navigation",
+                  "Seedling Navigaton",
                   style: TextStyle(
                       color: Colors.black,
                       fontSize: 22.4,
@@ -240,9 +252,11 @@ class _SellerDashboardHomeState extends State<SellerDashboardHome> {
       padding: const EdgeInsets.all(20),
       decoration: BoxDecoration(
         borderRadius: BorderRadius.circular(20),
+        // Set the asset image inside the card
+        // Set the NetworkImage inside the card
         image: const DecorationImage(
           image: NetworkImage(
-              'https://plus.unsplash.com/premium_photo-1669809948017-518b5d800d73?q=80&w=1887&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D'),
+              'https://plus.unsplash.com/premium_photo-1669809948017-518b5d800d73?q=80&w=1887&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D'), // Use NetworkImage
           fit: BoxFit.cover,
           colorFilter: ColorFilter.mode(Colors.black45, BlendMode.darken),
         ),
@@ -260,25 +274,29 @@ class _SellerDashboardHomeState extends State<SellerDashboardHome> {
               mainAxisSize: MainAxisSize.min,
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
+                // Temperature, Wind Speed, and Weather Icon Row
                 Row(
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [
                     Row(
                       crossAxisAlignment: CrossAxisAlignment.center,
                       children: [
+                        // Temperature
                         Text(
                           "${_weather?.temperature?.celsius?.toStringAsFixed(0)}°C",
                           style: const TextStyle(
                             fontSize: 40,
                             fontWeight: FontWeight.bold,
-                            color: Colors.white,
+                            color: Colors
+                                .white, // White text to contrast with the background
                           ),
                         ),
                         const SizedBox(width: 12),
+                        // Wind speed with icon
                         Row(
                           children: [
                             const Icon(
-                              Icons.wind_power,
+                              Icons.wind_power, // Wind icon
                               color: Colors.white,
                               size: 24,
                             ),
@@ -287,7 +305,8 @@ class _SellerDashboardHomeState extends State<SellerDashboardHome> {
                               "${_weather?.windSpeed?.toStringAsFixed(0)} m/s",
                               style: const TextStyle(
                                 fontSize: 16,
-                                color: Colors.white,
+                                color: Colors
+                                    .white, // White text to contrast with the background
                               ),
                             ),
                           ],
@@ -297,12 +316,14 @@ class _SellerDashboardHomeState extends State<SellerDashboardHome> {
                   ],
                 ),
                 const SizedBox(height: 2),
+                // City and Country name
                 Text(
                   '$cityName, $countryName',
                   style: const TextStyle(
                     fontSize: 16,
                     fontWeight: FontWeight.w400,
-                    color: Colors.white,
+                    color: Colors
+                        .white, // White text to contrast with the background
                   ),
                 ),
               ],
