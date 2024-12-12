@@ -1,3 +1,7 @@
+import 'dart:async';
+
+import 'package:firebase_auth/firebase_auth.dart';
+import 'package:firebase_database/firebase_database.dart'; // Firebase Realtime Database
 import 'package:flutter/material.dart';
 import 'package:rice_application/Screens/Bottom%20Navigation%20Bars/Seller/Seller-Tabs/seller_chatnavbar.dart';
 import 'package:rice_application/Screens/Bottom%20Navigation%20Bars/Seller/Seller-Tabs/seller_dashboard.dart';
@@ -19,17 +23,42 @@ class _SellerhomescreenState extends State<Sellerhomescreen> {
   int myIndex = 0;
   late PageController _pageController;
 
+// Variables to store dynamic values
+  String postId = ""; // Initialize postId
+  String sellerUid = ""; // Initialize sellerUid
+
   @override
   void initState() {
     super.initState();
-    // Initialize the PageController
     _pageController = PageController(initialPage: myIndex);
+    // Fetch the post data when the HomeScreen is initialized
+    _fetchPostData();
   }
 
-  @override
-  void dispose() {
-    _pageController.dispose();
-    super.dispose();
+  // Fetch post data dynamically (from Firebase)
+  Future<void> _fetchPostData() async {
+    // Example Firebase Realtime Database reference
+    DatabaseReference postRef =
+        FirebaseDatabase.instance.ref().child('Post List');
+
+    // Fetch the first post (or implement your filtering logic to get the correct post)
+    postRef.once().then((DataSnapshot snapshot) {
+          if (snapshot.exists) {
+            // Assuming the first post in the list (you can filter this based on your requirements)
+            Map<dynamic, dynamic> postData =
+                snapshot.value as Map<dynamic, dynamic>;
+
+            // Get the first postId from the keys and fetch corresponding sellerUid
+            String firstPostId = postData.keys.first;
+            String firstSellerUid =
+                postData[firstPostId]['sellerUid'] ?? 'UnknownSellerUid';
+
+            setState(() {
+              postId = firstPostId; // Set the postId dynamically
+              sellerUid = firstSellerUid; // Set the sellerUid dynamically
+            });
+          }
+        } as FutureOr Function(DatabaseEvent value));
   }
 
   // Method to navigate to a page
@@ -46,10 +75,21 @@ class _SellerhomescreenState extends State<Sellerhomescreen> {
   }
 
   @override
+  void dispose() {
+    _pageController.dispose();
+    super.dispose();
+  }
+
+  @override
   Widget build(BuildContext context) {
+    final String buyerUid = FirebaseAuth.instance.currentUser!.uid;
     final List<Widget> pageList = <Widget>[
       const SellerDashboardHome(),
-      const SellerChatnavbar(),
+      SellerChatnavbar(
+        buyerUid: buyerUid,
+        postId: postId, // Pass the dynamically set postId
+        sellerUid: sellerUid, // Pass the dynamically set sellerUid
+      ),
       const SellerPostcreatenavbar(),
       const SellerCartNavbar(),
       const SellerProfilenavbar(),

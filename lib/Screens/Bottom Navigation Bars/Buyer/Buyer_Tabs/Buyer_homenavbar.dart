@@ -243,10 +243,9 @@ class _BuyerHomenavbarState extends State<BuyerHomenavbar> {
     String name,
     String price,
     String description,
-    // String? nutrients,
-    // String? vitamins,
-    // String? dishes,
     String imagePath,
+    String sid,
+    String pid,
   ) {
     Navigator.push(
       context,
@@ -256,6 +255,8 @@ class _BuyerHomenavbarState extends State<BuyerHomenavbar> {
           price: price,
           description: description,
           imagePath: imagePath,
+          sellerUid: sid,
+          postId: pid,
         ),
       ),
     );
@@ -401,11 +402,10 @@ class _BuyerHomenavbarState extends State<BuyerHomenavbar> {
                                 _navigateToDetailsScreen(
                                   post['pTitle'] ?? 'No Title',
                                   post['pDescription'] ?? 'No Description',
-                                  //post['pNutrients'] ?? 'No Nutrients',
-                                  //post['pVitamins'] ?? 'No Vitamins',
-                                  //post['pDishes'] ?? 'No Dishes',
                                   post['pPrice'] ?? 'No Price',
                                   post['pImage'] ?? 'assets/images/default.jpg',
+                                  post['postId'] ?? 'No Postid',
+                                  post['sellerUid'] ?? 'Sellerid',
                                 );
                               },
                               child: ClipRRect(
