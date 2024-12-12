@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:geocoding/geocoding.dart'; // Import for reverse geocoding
 import 'package:geolocator/geolocator.dart'; // Import for geolocation
+import 'package:rice_application/Screens/Bottom%20Navigation%20Bars/Seller/Seller_Widget_Functions/WaterDetails.dart';
+import 'package:rice_application/Screens/Bottom%20Navigation%20Bars/Seller/Seller_Widget_Functions/seedDetails.dart';
 import 'package:weather/weather.dart';
 
 class SellerDashboardHome extends StatefulWidget {
@@ -79,6 +81,119 @@ class _SellerDashboardHomeState extends State<SellerDashboardHome> {
     ];
   }
 
+  // Function to show bottom sheet with more weather details
+  void _showWeatherDetails() {
+    showModalBottomSheet(
+      backgroundColor: const Color(0XFFFFFFFF),
+      context: context,
+      shape: const RoundedRectangleBorder(
+        borderRadius: BorderRadius.vertical(
+          top: Radius.circular(33.0),
+        ),
+      ), // Rounded corners for the bottom sheet
+      isScrollControlled:
+          true, // Makes the bottom sheet scrollable if content overflows
+      builder: (BuildContext context) {
+        return FractionallySizedBox(
+          heightFactor: 0.34, // Adjust the height of the bottom sheet
+          child: Padding(
+            padding: const EdgeInsets.all(16.0),
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                // Weather details organized in a grid-like structure (2 items per row)
+                Wrap(
+                  alignment: WrapAlignment.center,
+                  spacing: 10, // Horizontal space between items
+                  runSpacing: 10, // Vertical space between rows
+                  children: [
+                    // Each item will take half of the available width
+                    SizedBox(
+                      width: (MediaQuery.of(context).size.width / 2) -
+                          30, // Two items per row
+                      child: _buildDetailCard(
+                        icon: Icons.thermostat_rounded,
+                        iconColor: Colors.red,
+                        label: "Max",
+                        value:
+                            "${_weather?.tempMax?.celsius?.toStringAsFixed(0)}° C",
+                      ),
+                    ),
+                    SizedBox(
+                      width: (MediaQuery.of(context).size.width / 2) - 30,
+                      child: _buildDetailCard(
+                        icon: Icons.thermostat_auto,
+                        iconColor: Colors.blue,
+                        label: "Min",
+                        value:
+                            "${_weather?.tempMin?.celsius?.toStringAsFixed(0)}° C",
+                      ),
+                    ),
+                    SizedBox(
+                      width: (MediaQuery.of(context).size.width / 2) - 30,
+                      child: _buildDetailCard(
+                        icon: Icons.wind_power,
+                        iconColor: Colors.green,
+                        label: "Wind Speed",
+                        value: "${_weather?.windSpeed?.toStringAsFixed(0)} m/s",
+                      ),
+                    ),
+                    SizedBox(
+                      width: (MediaQuery.of(context).size.width / 2) - 30,
+                      child: _buildDetailCard(
+                        icon: Icons.water_drop,
+                        iconColor: Colors.blueAccent,
+                        label: "Humidity",
+                        value: "${_weather?.humidity?.toStringAsFixed(0)}%",
+                      ),
+                    ),
+                  ],
+                ),
+              ],
+            ),
+          ),
+        );
+      },
+    );
+  }
+
+// This widget will create a weather detail card with an icon and corresponding value
+  Widget _buildDetailCard({
+    required IconData icon,
+    required Color iconColor,
+    required String label,
+    required String value,
+  }) {
+    return Container(
+      padding: const EdgeInsets.all(12.0),
+      decoration: BoxDecoration(
+        borderRadius: BorderRadius.circular(10),
+        color: Colors.yellow[0], // Adjust the background color as needed
+      ),
+      child: Column(
+        mainAxisSize: MainAxisSize.min,
+        children: [
+          Icon(icon, color: iconColor, size: 40),
+          const SizedBox(height: 10),
+          Text(
+            label,
+            style: const TextStyle(
+              fontWeight: FontWeight.bold,
+              fontSize: 14,
+            ),
+          ),
+          const SizedBox(height: 5),
+          Text(
+            value,
+            style: const TextStyle(
+              fontSize: 14,
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -90,13 +205,41 @@ class _SellerDashboardHomeState extends State<SellerDashboardHome> {
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               // Weather Card positioned at the top
-              _buildWeatherCard(),
-              const SizedBox(height: 20),
-              // Add additional items below here in the future
-              Text(
-                "Additional items can be placed here...",
-                style: TextStyle(color: Colors.grey[700], fontSize: 16),
+              GestureDetector(
+                onTap: _showWeatherDetails, // Trigger bottom sheet on tap
+                child: _buildWeatherCard(),
               ),
+              const SizedBox(height: 40),
+              // Add additional items below here in the future
+              const Padding(
+                padding: EdgeInsets.only(left: 11.0),
+                child: Text(
+                  "Water Schedule",
+                  style: TextStyle(
+                      color: Colors.black,
+                      fontSize: 22.4,
+                      fontWeight: FontWeight.bold,
+                      fontFamily: 'Sans',
+                      letterSpacing: -0.5),
+                ),
+              ),
+              const SizedBox(height: 7),
+              const WaterCards(),
+              const SizedBox(height: 25),
+              const Padding(
+                padding: EdgeInsets.only(left: 11.0),
+                child: Text(
+                  "Seedling Navigaton",
+                  style: TextStyle(
+                      color: Colors.black,
+                      fontSize: 22.4,
+                      fontWeight: FontWeight.bold,
+                      fontFamily: 'Sans',
+                      letterSpacing: -0.5),
+                ),
+              ),
+              const SizedBox(height: 7),
+              const SeedCards(),
             ],
           ),
         ),
@@ -109,10 +252,11 @@ class _SellerDashboardHomeState extends State<SellerDashboardHome> {
       padding: const EdgeInsets.all(20),
       decoration: BoxDecoration(
         borderRadius: BorderRadius.circular(20),
-        // Set the background image inside the card
+        // Set the asset image inside the card
+        // Set the NetworkImage inside the card
         image: const DecorationImage(
           image: NetworkImage(
-              'https://plus.unsplash.com/premium_photo-1669809948017-518b5d800d73?q=80&w=1887&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D'),
+              'https://plus.unsplash.com/premium_photo-1669809948017-518b5d800d73?q=80&w=1887&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D'), // Use NetworkImage
           fit: BoxFit.cover,
           colorFilter: ColorFilter.mode(Colors.black45, BlendMode.darken),
         ),
@@ -169,19 +313,6 @@ class _SellerDashboardHomeState extends State<SellerDashboardHome> {
                         ),
                       ],
                     ),
-                    // Weather Icon
-                    if (weatherIconUrl != null)
-                      Image.network(
-                        weatherIconUrl!,
-                        height: 60,
-                        width: 60,
-                        errorBuilder: (context, error, stackTrace) {
-                          return const Icon(
-                            Icons.error,
-                            color: Colors.red,
-                          );
-                        },
-                      ),
                   ],
                 ),
                 const SizedBox(height: 2),
