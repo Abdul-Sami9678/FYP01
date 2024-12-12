@@ -10,8 +10,8 @@ import 'package:rice_application/Screens/Authentication/Email/login-email.dart';
 import 'package:rice_application/Screens/Authentication/Email/signup-email.dart';
 import 'package:rice_application/Screens/Authentication/phone_authentication.dart';
 import 'package:rice_application/Screens/Bottom%20Navigation%20Bars/Buyer/Buyer_Provider/cart_provider.dart';
-import 'package:rice_application/Screens/Bottom%20Navigation%20Bars/Buyer/Buyer_Tabs/Buyer_chatnavbar.dart';
 import 'package:rice_application/Screens/Bottom%20Navigation%20Bars/Buyer/Buyer_Widgets/buyer_address.dart';
+import 'package:rice_application/Screens/Bottom%20Navigation%20Bars/Buyer/Buyer_Widgets_Functions/chat_provider.dart';
 import 'package:rice_application/Screens/Bottom%20Navigation%20Bars/Seller/sellerHomescreen.dart';
 import 'package:rice_application/Screens/Home-Screen/home_screen.dart';
 import 'package:rice_application/Screens/OnBoarding/IntroScreens/GetStarted/welcome.dart';
@@ -48,7 +48,11 @@ class MyApp extends StatelessWidget {
     return MultiProvider(
       providers: [
         ChangeNotifierProvider(
-            create: (_) => CartProvider()), // Provide CartProvider here
+          create: (_) => CartProvider(), // Provide CartProvider
+        ),
+        ChangeNotifierProvider(
+          create: (_) => ChatProvider(), // Provide ChatProvider
+        ),
       ],
       child: GetMaterialApp(
         // Routes Initializing
@@ -60,7 +64,6 @@ class MyApp extends StatelessWidget {
           ForegetEmailpassword.id: (context) => const ForegetEmailpassword(),
           HomeScreen.id: (context) => const HomeScreen(),
           Sellerhomescreen.id: (context) => const Sellerhomescreen(),
-          BuyerChatnavbar.id: (context) => const BuyerChatnavbar(),
           BuyerAddress.id: (context) => const BuyerAddress(),
         },
         navigatorKey: NavigationService.navigatorKey,

@@ -268,7 +268,7 @@ class _SellerPostcreatenavbarState extends State<SellerPostcreatenavbar> {
               'uEmail': user?.email ?? 'No Email',
               'uPhoneNumber': user?.phoneNumber ?? 'No Phone Number',
               'uDisplayName': user?.displayName ?? 'No Display Name',
-              'uId': user?.uid ?? 'No UID',
+              'sellerUid': user?.uid ?? 'No UID',
             }).then((value) {
               setState(() {
                 showSpinner = false;

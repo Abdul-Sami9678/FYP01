@@ -1,16 +1,20 @@
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get_core/src/get_main.dart';
 import 'package:get/get_navigation/get_navigation.dart';
 import 'package:provider/provider.dart'; // Import provider package
 import 'package:rice_application/Screens/Bottom%20Navigation%20Bars/Buyer/Buyer_Provider/cart_provider.dart';
+import 'package:rice_application/Screens/Bottom%20Navigation%20Bars/Buyer/Buyer_Tabs/Buyer_chatnavbar.dart';
 import 'package:rice_application/Screens/Bottom%20Navigation%20Bars/Buyer/Buyer_Widgets_Functions/cart_items.dart';
 import 'package:touchable_opacity/touchable_opacity.dart';
 
-class PostDetailsScreen extends StatelessWidget {
+class PostDetailsScreen extends StatefulWidget {
   final String name;
   final String description;
   final String price;
   final String imagePath;
+  final String postId;
+  final String sellerUid;
 
   const PostDetailsScreen({
     super.key,
@@ -18,10 +22,32 @@ class PostDetailsScreen extends StatelessWidget {
     required this.price,
     required this.description,
     required this.imagePath,
+    required this.postId, // Add postId
+    required this.sellerUid, // Add sellerUid
   });
 
   @override
+  _PostDetailsScreenState createState() => _PostDetailsScreenState();
+}
+
+class _PostDetailsScreenState extends State<PostDetailsScreen> {
+  bool isLoading = false; // Track the loading state
+
+  @override
   Widget build(BuildContext context) {
+    // Get the current buyer UID from FirebaseAuth
+    final buyerUid = FirebaseAuth.instance.currentUser?.uid;
+    // If buyerUid is null, handle the error (should not happen if user is logged in)
+    if (buyerUid == null) {
+      // Show an error message and return
+      return Scaffold(
+        appBar: AppBar(title: const Text('Error')),
+        body: const Center(
+          child: Text('User not authenticated! Please log in.'),
+        ),
+      );
+    }
+
     return Scaffold(
       backgroundColor: const Color(0XFFFFFFFF),
       body: SingleChildScrollView(
@@ -68,10 +94,10 @@ class PostDetailsScreen extends StatelessWidget {
             // Image
             ClipRRect(
               borderRadius: BorderRadius.circular(26),
-              child: imagePath.startsWith('http')
+              child: widget.imagePath.startsWith('http')
                   ? FadeInImage.assetNetwork(
                       placeholder: 'assets/images/Profile.jpg',
-                      image: imagePath,
+                      image: widget.imagePath,
                       fit: BoxFit.cover,
                       width: double.infinity,
                       height: 250,
@@ -85,7 +111,7 @@ class PostDetailsScreen extends StatelessWidget {
                       },
                     )
                   : Image.asset(
-                      imagePath,
+                      widget.imagePath,
                       fit: BoxFit.cover,
                       width: double.infinity,
                       height: 300,
@@ -94,7 +120,7 @@ class PostDetailsScreen extends StatelessWidget {
             const SizedBox(height: 20),
             // Title
             Text(
-              name,
+              widget.name,
               style: const TextStyle(
                 letterSpacing: -0.3,
                 fontWeight: FontWeight.bold,
@@ -125,7 +151,7 @@ class PostDetailsScreen extends StatelessWidget {
             Padding(
               padding: const EdgeInsets.symmetric(vertical: 10),
               child: Text(
-                price,
+                widget.price,
                 style: const TextStyle(
                   fontSize: 15,
                   height: 1.4,
@@ -145,7 +171,7 @@ class PostDetailsScreen extends StatelessWidget {
               ),
             ),
             Text(
-              'Rs.$description',
+              'Rs.${widget.description}',
               style: const TextStyle(
                 fontSize: 21,
                 letterSpacing: -0.3,
@@ -169,11 +195,12 @@ class PostDetailsScreen extends StatelessWidget {
                 onPressed: () {
                   // Create a CartItem with all necessary fields
                   final cartItem = CartItem(
-                    id: name, // You can use a unique ID here like a product ID
-                    name: name, // Product name
-                    imagePath: imagePath, // Product image path
+                    id: widget
+                        .name, // You can use a unique ID here like a product ID
+                    name: widget.name, // Product name
+                    imagePath: widget.imagePath, // Product image path
                     price: double.parse(
-                        description), // Ensure the price is a double
+                        widget.description), // Ensure the price is a double
                   );
 
                   // Add the item to the cart using CartProvider
@@ -239,21 +266,41 @@ class PostDetailsScreen extends StatelessWidget {
                     borderRadius: BorderRadius.circular(14),
                   ),
                 ),
-                onPressed: () {
-                  // Handle chat action here
+                onPressed: () async {
+                  setState(() {
+                    isLoading = true; // Show the loading indicator
+                  });
+
+                  // Wait for 2 seconds
+                  await Future.delayed(const Duration(seconds: 2));
+
+                  setState(() {
+                    isLoading = false; // Hide the loading indicator
+                  });
+
+                  // Navigate to the chat screen after the delay
+                  Get.to(() => BuyerChatnavbar(
+                        postId: widget.postId,
+                        sellerUid: widget.sellerUid,
+                        buyerUid: buyerUid, // Get the current buyer's UID
+                      ));
                 },
-                child: TouchableOpacity(
-                  activeOpacity: 0.2,
-                  child: const Text(
-                    'Chat',
-                    style: TextStyle(
-                      fontSize: 16,
-                      letterSpacing: -0.3,
-                      fontWeight: FontWeight.bold,
-                      color: Colors.black,
-                    ),
-                  ),
-                ),
+                child: isLoading
+                    ? const CircularProgressIndicator(
+                        color: Colors.black,
+                      )
+                    : TouchableOpacity(
+                        activeOpacity: 0.2,
+                        child: const Text(
+                          'Chat',
+                          style: TextStyle(
+                            fontSize: 17,
+                            letterSpacing: -0.3,
+                            fontWeight: FontWeight.bold,
+                            color: Colors.black,
+                          ),
+                        ),
+                      ),
               ),
             ),
             const SizedBox(height: 22),
