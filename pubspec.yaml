@@ -2,7 +2,7 @@ name: rice_application
 description: "A new Flutter project."
 # The following line prevents the package from being accidentally published to
 # pub.dev using `flutter pub publish`. This is preferred for private packages.
-publish_to: 'none' # Remove this line if you wish to publish to pub.dev
+publish_to: "none" # Remove this line if you wish to publish to pub.dev
 
 # The following defines the version and build number for your application.
 # A version number is three numbers separated by dots, like 1.2.43
@@ -19,7 +19,7 @@ publish_to: 'none' # Remove this line if you wish to publish to pub.dev
 version: 1.0.0+1
 
 environment:
-  sdk: '>=3.4.4 <4.0.0'
+  sdk: ">=3.4.4 <4.0.0"
 
 # Dependencies specify other packages that your package needs in order to work.
 # To automatically upgrade your package dependencies to the latest versions
@@ -30,7 +30,6 @@ environment:
 dependencies:
   flutter:
     sdk: flutter
-
 
   # The following adds the Cupertino Icons font to your application.
   # Use with the CupertinoIcons class for iOS style icons.
@@ -46,7 +45,7 @@ dependencies:
   country_code_picker: ^3.0.0
   lottie: ^3.1.2
   quickalert: ^1.1.0
-  image_picker: ^1.1.2
+  image_picker: ^0.8.4+4
   cloud_firestore: ^5.2.1
   flutter_svg: ^2.0.10+1
   flutter_screenutil: ^5.9.3
@@ -62,10 +61,7 @@ dependencies:
   weather: ^3.1.1
   geolocator: ^13.0.1
   geocoding: ^2.0.4
-  
-
-  
-  
+  flutter_tflite: ^1.0.1
 
 dev_dependencies:
   flutter_test:
@@ -83,7 +79,6 @@ dev_dependencies:
 
 # The following section is specific to Flutter packages.
 flutter:
-
   # The following line ensures that the Material Icons font is
   # included with your application, so that you can use the icons in
   # the material Icons class.
@@ -96,9 +91,8 @@ flutter:
     - assets/Logos/
     - assets/images/Icons/
     - assets/Animations/
-    - assets/images/Research/Seed/
-    - assets/images/Research/Water/
-    - assets/.env
+    - assets/new_rice_classifier_model.tflite
+    - assets/labels.txt
   #   - images/a_dot_ham.jpeg
 
   # An image asset can refer to one or more resolution-specific "variants", see
@@ -116,13 +110,13 @@ flutter:
     - family: League
       fonts:
         - asset: fonts/LeagueSpartan-Medium.ttf
-  #       - asset: fonts/Schyler-Italic.ttf
-  #         style: italic
+    #       - asset: fonts/Schyler-Italic.ttf
+    #         style: italic
     - family: Poppins
       fonts:
         - asset: fonts/Poppins-Bold.ttf
-  #       - asset: fonts/TrajanPro_Bold.ttf
-  #         weight: 
+    #       - asset: fonts/TrajanPro_Bold.ttf
+    #         weight:
     - family: Inter
       fonts:
         - asset: fonts/Inter-Regular.ttf
@@ -157,7 +151,7 @@ flutter:
 
     - family: Lato-Regular
       fonts:
-        - asset: fonts/Lato-Regular.ttf               
+        - asset: fonts/Lato-Regular.ttf
 
   #
   # For details regarding fonts from package dependencies,
