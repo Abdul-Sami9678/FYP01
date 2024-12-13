@@ -4,9 +4,9 @@ import 'package:get/get_core/src/get_main.dart';
 import 'package:get/get_navigation/get_navigation.dart';
 import 'package:provider/provider.dart'; // Import provider package
 import 'package:rice_application/Screens/Bottom%20Navigation%20Bars/Buyer/Buyer_Provider/cart_provider.dart';
-import 'package:rice_application/Screens/Bottom%20Navigation%20Bars/Buyer/Buyer_Tabs/Buyer_chatnavbar.dart';
 import 'package:rice_application/Screens/Bottom%20Navigation%20Bars/Buyer/Buyer_Widgets_Functions/cart_items.dart';
 import 'package:touchable_opacity/touchable_opacity.dart';
+import 'package:url_launcher/url_launcher.dart';
 
 class PostDetailsScreen extends StatefulWidget {
   final String name;
@@ -32,6 +32,15 @@ class PostDetailsScreen extends StatefulWidget {
 
 class _PostDetailsScreenState extends State<PostDetailsScreen> {
   bool isLoading = false; // Track the loading state
+  void launchWhatsApp(String phoneNumber) async {
+    final url = 'https://wa.me/$phoneNumber'; // WhatsApp link
+    // ignore: deprecated_member_use
+    if (await canLaunch(url)) {
+      await launch(url);
+    } else {
+      throw 'Could not open WhatsApp';
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -279,11 +288,9 @@ class _PostDetailsScreenState extends State<PostDetailsScreen> {
                   });
 
                   // Navigate to the chat screen after the delay
-                  Get.to(() => BuyerChatnavbar(
-                        postId: widget.postId,
-                        sellerUid: widget.sellerUid,
-                        buyerUid: buyerUid, // Get the current buyer's UID
-                      ));
+                  const sellerPhoneNumber =
+                      '+923478780096'; // Replace with actual seller's phone number
+                  launchWhatsApp(sellerPhoneNumber);
                 },
                 child: isLoading
                     ? const CircularProgressIndicator(

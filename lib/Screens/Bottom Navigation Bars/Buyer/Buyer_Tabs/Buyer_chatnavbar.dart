@@ -2,39 +2,37 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:lottie/lottie.dart';
 
-class BuyerChatnavbar extends StatefulWidget {
-  const BuyerChatnavbar({
+class BuyerChatNavbar extends StatefulWidget {
+  const BuyerChatNavbar({
     super.key,
     required this.postId,
     required this.sellerUid,
     required this.buyerUid,
   });
 
-  // Static-ID of Chat Screen
-  static const String id = 'Chat-screen';
+  static const String id = 'Buyer-Chat-screen';
 
   final String postId;
   final String sellerUid;
   final String buyerUid;
 
   @override
-  State<BuyerChatnavbar> createState() => _BuyerChatnavbarState();
+  State<BuyerChatNavbar> createState() => _BuyerChatNavbarState();
 }
 
-class _BuyerChatnavbarState extends State<BuyerChatnavbar> {
+class _BuyerChatNavbarState extends State<BuyerChatNavbar> {
   final TextEditingController _messageController = TextEditingController();
-  bool _isChatInitialized = false; // Flag to track if chat is initialized
+  bool _isChatInitialized = false;
 
-  // Initialize chat room if it doesn't exist
+  // Initialize chat if it doesn't exist
   Future<void> _initChat() async {
-    // Check if the chat room already exists
     final chatDoc = await FirebaseFirestore.instance
         .collection('chats')
-        .doc(widget.postId) // Use postId as the unique ID for the chat
+        .doc(widget.postId)
         .get();
 
     if (!chatDoc.exists) {
-      // If it doesn't exist, create a new chat document
+      // Create a new chat if it doesn't exist
       await FirebaseFirestore.instance
           .collection('chats')
           .doc(widget.postId)
@@ -42,12 +40,10 @@ class _BuyerChatnavbarState extends State<BuyerChatnavbar> {
         'postId': widget.postId,
         'buyerUid': widget.buyerUid,
         'sellerUid': widget.sellerUid,
-        'messages': [],
         'createdAt': FieldValue.serverTimestamp(),
       });
     }
 
-    // Update the state to show chat content
     setState(() {
       _isChatInitialized = true;
     });
@@ -56,27 +52,26 @@ class _BuyerChatnavbarState extends State<BuyerChatnavbar> {
   @override
   void initState() {
     super.initState();
-    _initChat(); // Initialize chat when the screen loads
+    _initChat();
   }
 
-  // Send message to the chat room
+  // Send message
   void _sendMessage() async {
     if (_messageController.text.isNotEmpty) {
       try {
         var timestamp = FieldValue.serverTimestamp();
 
-        // Add message to Firestore as a new document in the 'messages' subcollection
+        // Add message to Firestore
         await FirebaseFirestore.instance
             .collection('chats')
             .doc(widget.postId)
-            .collection('messages') // Subcollection for messages
+            .collection('messages')
             .add({
           'senderId': widget.buyerUid,
           'message': _messageController.text,
-          'timestamp': timestamp, // Use timestamp here
+          'timestamp': timestamp,
         });
 
-        // Clear the message controller
         _messageController.clear();
       } catch (e) {
         print('Error sending message: $e');
@@ -96,14 +91,14 @@ class _BuyerChatnavbarState extends State<BuyerChatnavbar> {
                   mainAxisAlignment: MainAxisAlignment.center,
                   crossAxisAlignment: CrossAxisAlignment.center,
                   children: [
-                    // Chat section where we display messages
+                    // Display messages from the seller and buyer
                     Expanded(
                       child: StreamBuilder<QuerySnapshot>(
                         stream: FirebaseFirestore.instance
                             .collection('chats')
                             .doc(widget.postId)
                             .collection('messages')
-                            .orderBy('timestamp') // Order by timestamp
+                            .orderBy('timestamp')
                             .snapshots(),
                         builder: (context, snapshot) {
                           if (snapshot.connectionState ==
@@ -115,17 +110,10 @@ class _BuyerChatnavbarState extends State<BuyerChatnavbar> {
                           if (!snapshot.hasData ||
                               snapshot.data!.docs.isEmpty) {
                             return const Center(
-                                child: Text(
-                              'No messages yet!',
-                              style: TextStyle(
-                                  fontSize: 19,
-                                  fontFamily: 'Poppins',
-                                  letterSpacing: -0.2),
-                            ));
+                                child: Text('No messages yet!'));
                           }
 
                           final messages = snapshot.data!.docs;
-
                           return ListView.builder(
                             itemCount: messages.length,
                             itemBuilder: (context, index) {
@@ -146,13 +134,11 @@ class _BuyerChatnavbarState extends State<BuyerChatnavbar> {
                                   children: [
                                     Container(
                                       padding: const EdgeInsets.symmetric(
-                                        horizontal: 14.0,
-                                        vertical: 7.0,
-                                      ),
+                                          horizontal: 14.0, vertical: 7.0),
                                       decoration: BoxDecoration(
                                         color: isBuyerMessage
                                             ? const Color.fromARGB(
-                                                255, 14, 14, 14)
+                                                255, 36, 36, 36)
                                             : Colors.grey[300],
                                         borderRadius:
                                             BorderRadius.circular(16.0),
@@ -167,8 +153,7 @@ class _BuyerChatnavbarState extends State<BuyerChatnavbar> {
                                             style: TextStyle(
                                               color: isBuyerMessage
                                                   ? Colors.white
-                                                  : Colors
-                                                      .black, // White for Buyer, Black for Seller
+                                                  : Colors.black,
                                               fontWeight: FontWeight.bold,
                                             ),
                                           ),
@@ -178,14 +163,10 @@ class _BuyerChatnavbarState extends State<BuyerChatnavbar> {
                                             style: TextStyle(
                                               fontSize: 16.0,
                                               color: isBuyerMessage
-                                                  ? Colors
-                                                      .white // White font color for buyer's message
-                                                  : Colors
-                                                      .black, // Default black font for seller's message
+                                                  ? Colors.white
+                                                  : Colors.black,
                                             ),
                                           ),
-                                          const SizedBox(height: 5),
-                                          // Removed timestamp as per previous request
                                         ],
                                       ),
                                     ),
@@ -198,65 +179,39 @@ class _BuyerChatnavbarState extends State<BuyerChatnavbar> {
                       ),
                     ),
 
-                    // Send message input section
+                    // Input field to send message
                     const SizedBox(height: 10),
                     Padding(
-                        padding: const EdgeInsets.all(8.0),
-                        child: Row(
-                          children: [
-                            Expanded(
-                              child: TextField(
-                                controller: _messageController,
-                                cursorColor:
-                                    Colors.black, // Set cursor color to black
-                                decoration: const InputDecoration(
-                                  hintText: 'Enter a message...',
-                                  hintStyle: TextStyle(
-                                      fontFamily: 'Roboto-Regular',
-                                      letterSpacing: 0),
-                                  border: OutlineInputBorder(
-                                    borderRadius: BorderRadius.all(
-                                        Radius.circular(14.0)), // Round corners
-                                  ),
-                                  focusedBorder: OutlineInputBorder(
-                                    borderRadius: BorderRadius.all(
-                                        Radius.circular(
-                                            18.0)), // Rounded focus border
-                                    borderSide: BorderSide(
-                                        color: Colors
-                                            .black), // Border color on focus
-                                  ),
-                                  enabledBorder: OutlineInputBorder(
-                                    borderRadius: BorderRadius.all(
-                                        Radius.circular(
-                                            17.0)), // Rounded enabled border
-                                    borderSide: BorderSide(
-                                        color: Colors
-                                            .grey), // Border color when not focused
-                                  ),
+                      padding: const EdgeInsets.all(8.0),
+                      child: Row(
+                        children: [
+                          Expanded(
+                            child: TextField(
+                              controller: _messageController,
+                              cursorColor: Colors.black,
+                              decoration: const InputDecoration(
+                                hintText: 'Enter a message...',
+                                border: OutlineInputBorder(
+                                  borderRadius:
+                                      BorderRadius.all(Radius.circular(14.0)),
                                 ),
                               ),
                             ),
-                            const SizedBox(
-                                width:
-                                    8), // Add space between the TextField and IconButton
-                            Container(
-                              decoration: BoxDecoration(
-                                color: Colors.black, // Button background color
-                                borderRadius: BorderRadius.circular(
-                                    30.0), // Make the button rounded
-                              ),
-                              child: IconButton(
-                                icon: const Icon(
-                                  Icons.send,
-                                  color: Colors
-                                      .white, // Set the icon color to white
-                                ),
-                                onPressed: _sendMessage,
-                              ),
+                          ),
+                          const SizedBox(width: 8),
+                          Container(
+                            decoration: BoxDecoration(
+                              color: const Color.fromARGB(255, 36, 36, 36),
+                              borderRadius: BorderRadius.circular(30.0),
                             ),
-                          ],
-                        )),
+                            child: IconButton(
+                              icon: const Icon(Icons.send, color: Colors.white),
+                              onPressed: _sendMessage,
+                            ),
+                          ),
+                        ],
+                      ),
+                    ),
                   ],
                 ),
               )
@@ -264,7 +219,6 @@ class _BuyerChatnavbarState extends State<BuyerChatnavbar> {
                 mainAxisAlignment: MainAxisAlignment.center,
                 crossAxisAlignment: CrossAxisAlignment.center,
                 children: [
-                  // Show Lottie animation and text only if chat is not initialized yet
                   Flexible(
                     child: Lottie.asset(
                       'assets/Animations/Chat.json',
@@ -279,10 +233,7 @@ class _BuyerChatnavbarState extends State<BuyerChatnavbar> {
                     textAlign: TextAlign.center,
                     style: TextStyle(
                       fontSize: 17,
-                      letterSpacing: -0.2,
-                      fontFamily: 'Inter',
                       fontWeight: FontWeight.bold,
-                      color: Colors.black,
                     ),
                   ),
                   const SizedBox(height: 5),
@@ -291,8 +242,6 @@ class _BuyerChatnavbarState extends State<BuyerChatnavbar> {
                     textAlign: TextAlign.center,
                     style: TextStyle(
                       fontSize: 15,
-                      letterSpacing: -0.1,
-                      fontFamily: 'Inter',
                       color: Color.fromARGB(255, 157, 156, 156),
                     ),
                   ),
