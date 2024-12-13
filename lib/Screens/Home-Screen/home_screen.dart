@@ -84,7 +84,7 @@ class _HomeScreenState extends State<HomeScreen> {
     final List<Widget> pageList = <Widget>[
       const BuyerHomenavbar(),
       // Pass the dynamically fetched postId and sellerUid to BuyerChatnavbar
-      BuyerChatnavbar(
+      BuyerChatNavbar(
         buyerUid: buyerUid,
         postId: postId, // Pass the dynamically set postId
         sellerUid: sellerUid, // Pass the dynamically set sellerUid

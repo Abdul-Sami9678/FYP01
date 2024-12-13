@@ -85,7 +85,7 @@ class _SellerhomescreenState extends State<Sellerhomescreen> {
     final String buyerUid = FirebaseAuth.instance.currentUser!.uid;
     final List<Widget> pageList = <Widget>[
       const SellerDashboardHome(),
-      SellerChatnavbar(
+      SellerChatNavbar(
         buyerUid: buyerUid,
         postId: postId, // Pass the dynamically set postId
         sellerUid: sellerUid, // Pass the dynamically set sellerUid
